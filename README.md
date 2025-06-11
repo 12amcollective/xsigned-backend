@@ -1,4 +1,4 @@
-# Music Campaign Backend
+# xSigned Campaign Manager Backend
 
 This project is a backend web application designed to collect user information and manage records for a music marketing campaign manager. It is built using Flask and provides endpoints for user and campaign management.
 
