@@ -19,11 +19,14 @@ def create_app():
     
     # Enable CORS for production domains
     cors_origins = [
-        "http://localhost:3000",  # Development
-        "https://xsigned.ai",     # Production
-        "https://*.xsigned.ai"    # Subdomains
+        "http://localhost:3000",        # Local development
+        "http://192.168.86.70:3000",   # Pi frontend container
+        "http://192.168.86.70",        # Pi nginx proxy
+        "https://xsigned.ai",          # Production domain
+        "https://*.xsigned.ai",        # Subdomains
+        "https://www.xsigned.ai"       # WWW subdomain
     ]
-    CORS(app, origins=cors_origins)
+    CORS(app, origins=cors_origins, supports_credentials=True)
     
     # Register blueprints
     app.register_blueprint(users_bp)

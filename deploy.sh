@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Deployment script for Raspberry Pi
-# Run this on your Pi after cloning the repo
+# Full Stack Deployment script for Raspberry Pi
+# Run this on your Pi after cloning both backend and frontend repos
 
 set -e
 
-echo "🚀 Deploying Music Campaign Backend..."
+echo "🚀 Deploying Music Campaign Full Stack..."
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null; then
@@ -35,6 +35,13 @@ if [ ! -f .env ]; then
     exit 1
 fi
 
+# Check if frontend directory exists
+if [ ! -d "../music-campaign-frontend" ]; then
+    echo "⚠️  Frontend directory not found. Please clone your React app to ../music-campaign-frontend"
+    echo "   Or update the path in docker-compose.yml"
+    exit 1
+fi
+
 # Build and start services
 echo "🔨 Building and starting services..."
 docker compose up -d --build
@@ -52,11 +59,13 @@ echo "📝 Recent logs:"
 docker compose logs --tail=20
 
 echo "✅ Deployment complete!"
-echo "🌐 Your API should be available at:"
-echo "   - Health check: http://$(hostname -I | awk '{print $1}'):5001/health"
-echo "   - API endpoints: http://$(hostname -I | awk '{print $1}'):5001/api/"
+echo "🌐 Your application should be available at:"
+echo "   - Frontend: http://$(hostname -I | awk '{print $1}')"
+echo "   - API: http://$(hostname -I | awk '{print $1}')/api/"
+echo "   - Health check: http://$(hostname -I | awk '{print $1}')/health"
 echo ""
 echo "📋 Useful commands:"
 echo "   - View logs: docker compose logs -f"
 echo "   - Stop services: docker compose down"
 echo "   - Restart: docker compose up -d --build"
+echo "   - View specific service: docker compose logs frontend"
