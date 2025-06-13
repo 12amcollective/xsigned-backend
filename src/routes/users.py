@@ -52,3 +52,27 @@ def get_user(user_id):
 def health_check():
     """Health check endpoint"""
     return jsonify({"status": "healthy"}), 200
+
+@users_bp.route('/join_waitlist', methods=['POST'])
+def join_waitlist():
+    """Join waitlist endpoint"""
+    try:
+        data = request.get_json()
+        if not data or 'email' not in data:
+            return jsonify({"error": "Email is required"}), 400
+
+        email = data['email']
+        result, status_code = UserService.join_waitlist(email)
+        return jsonify(result), status_code
+
+    except Exception as e:
+        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+    
+@users_bp.route('/waitlist', methods=['GET'])
+def get_waitlist():
+    """Get all emails on the waitlist"""
+    try:
+        result, status_code = UserService.get_waitlist_emails()
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"error": f"Internal server error: {str(e)}"}), 500

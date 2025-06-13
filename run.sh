@@ -84,10 +84,10 @@ case "${1:-help}" in
         ;;
     
     "deploy")
-        print_header "🚀 Starting full deployment..."
+        print_header "🚀 Starting production deployment..."
         ./validate-deployment.sh
-        ./deploy-to-pi.sh
-        print_success "Deployment completed!"
+        ./deploy-production.sh
+        print_success "Production deployment completed!"
         ;;
     
     "deploy-dev")
