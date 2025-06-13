@@ -5,6 +5,7 @@ This guide will help you deploy the Music Campaign Backend to your Raspberry Pi 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Raspberry Pi 4/5 with Ubuntu/Raspberry Pi OS
 - Docker and Docker Compose installed
 - Cloudflare account with a domain (xsigned.ai)
@@ -30,6 +31,7 @@ nano .env
 ```
 
 **Required values:**
+
 - `DB_PASSWORD`: Strong password for PostgreSQL
 - `CLOUDFLARE_TUNNEL_TOKEN`: Get from Cloudflare dashboard
 - `FLASK_SECRET_KEY`: Generate with `python -c "import secrets; print(secrets.token_hex(32))"`
@@ -45,6 +47,7 @@ chmod +x deploy-to-pi.sh setup-cloudflare-tunnel.sh
 ```
 
 This script will:
+
 - ✅ Update system packages
 - ✅ Install Docker and Docker Compose
 - ✅ Set up Cloudflare Tunnel
@@ -81,6 +84,7 @@ If you prefer to set up the tunnel manually:
 ### 2. Configure Domain
 
 In the tunnel configuration:
+
 - **Public hostname**: `xsigned.ai`
 - **Service**: `http://localhost:80`
 - Add additional hostname: `www.xsigned.ai`
@@ -94,6 +98,7 @@ Internet → Cloudflare → Tunnel → Nginx → Backend/Frontend
 ```
 
 ### Services:
+
 - **Frontend**: React app (port 3000)
 - **Backend**: Flask API (port 5001)
 - **Database**: PostgreSQL (port 5432)
@@ -103,21 +108,25 @@ Internet → Cloudflare → Tunnel → Nginx → Backend/Frontend
 ## 📊 Monitoring & Maintenance
 
 ### Check Service Status
+
 ```bash
 ./check-logs.sh
 ```
 
 ### Restart Services
+
 ```bash
 ./restart-services.sh
 ```
 
 ### Backup Database
+
 ```bash
 ./backup-database.sh
 ```
 
 ### View Real-time Logs
+
 ```bash
 # All services
 docker-compose -f docker-compose.production.yml logs -f
@@ -127,6 +136,7 @@ docker-compose -f docker-compose.production.yml logs -f backend
 ```
 
 ### Check Cloudflare Tunnel
+
 ```bash
 sudo systemctl status cloudflared
 sudo journalctl -u cloudflared -f
@@ -137,12 +147,14 @@ sudo journalctl -u cloudflared -f
 ### Services Won't Start
 
 1. **Check Docker:**
+
    ```bash
    sudo systemctl status docker
    docker --version
    ```
 
 2. **Check environment variables:**
+
    ```bash
    cat .env
    ```
@@ -156,6 +168,7 @@ sudo journalctl -u cloudflared -f
 ### Database Connection Issues
 
 1. **Check PostgreSQL:**
+
    ```bash
    docker-compose -f docker-compose.production.yml exec postgres pg_isready -U backend_user
    ```
@@ -169,11 +182,13 @@ sudo journalctl -u cloudflared -f
 ### Tunnel Connection Issues
 
 1. **Check tunnel status:**
+
    ```bash
    sudo systemctl status cloudflared
    ```
 
 2. **Restart tunnel:**
+
    ```bash
    sudo systemctl restart cloudflared
    ```
@@ -185,11 +200,13 @@ sudo journalctl -u cloudflared -f
 ### Application Not Loading
 
 1. **Check nginx:**
+
    ```bash
    docker-compose -f docker-compose.production.yml logs nginx
    ```
 
 2. **Test locally:**
+
    ```bash
    curl http://localhost/health
    ```
@@ -221,6 +238,7 @@ sudo journalctl -u cloudflared -f
 ## 🔄 Updates & Deployment
 
 ### Update Application
+
 ```bash
 git pull origin main
 docker-compose -f docker-compose.production.yml build
@@ -228,6 +246,7 @@ docker-compose -f docker-compose.production.yml up -d
 ```
 
 ### Rollback
+
 ```bash
 # Stop current version
 docker-compose -f docker-compose.production.yml down
@@ -252,11 +271,13 @@ If you encounter issues:
 ## 🎉 Success!
 
 Once deployed, your music campaign backend will be available at:
+
 - **Production**: https://xsigned.ai
 - **API**: https://xsigned.ai/api
 - **Health Check**: https://xsigned.ai/health
 
 The system includes:
+
 - ✅ Automatic backups (daily at 2 AM)
 - ✅ Health monitoring
 - ✅ Log rotation

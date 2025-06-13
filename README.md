@@ -16,12 +16,14 @@ A comprehensive Flask-based backend for managing music marketing campaigns, desi
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Raspberry Pi 4/5 with Ubuntu/Raspberry Pi OS
 - Docker and Docker Compose
 - Cloudflare account with domain
 - SSH access to your Pi
 
 ### 1. Clone and Setup
+
 ```bash
 git clone https://github.com/your-username/music-campaign-backend.git
 cd music-campaign-backend
@@ -29,7 +31,9 @@ cd music-campaign-backend
 ```
 
 ### 2. Configure Environment
+
 Edit `.env` file with your values:
+
 ```bash
 # Required configuration
 DB_PASSWORD=your_secure_password
@@ -39,12 +43,14 @@ DOMAIN=xsigned.ai
 ```
 
 ### 3. Deploy
+
 ```bash
 ./run.sh validate  # Check configuration
 ./run.sh deploy    # Full deployment to Pi
 ```
 
 ### 4. Verify
+
 ```bash
 ./run.sh status    # Check system health
 ./run.sh test      # Test API endpoints
@@ -59,8 +65,9 @@ Internet → Cloudflare → Tunnel → Nginx → Backend/Frontend
 ```
 
 ### Services
+
 - **Backend**: Flask API (Python 3.11)
-- **Frontend**: React application  
+- **Frontend**: React application
 - **Database**: PostgreSQL 15
 - **Proxy**: Nginx with rate limiting
 - **Tunnel**: Cloudflare Tunnel for secure access
@@ -70,12 +77,14 @@ Internet → Cloudflare → Tunnel → Nginx → Backend/Frontend
 ### Endpoints
 
 #### Users
+
 - `GET /api/users` - List all users
 - `POST /api/users` - Create new user
 - `GET /api/users/{id}` - Get specific user
 - `GET /api/users/{id}/campaigns` - Get user's campaigns
 
 #### Campaigns
+
 - `GET /api/campaigns` - List all campaigns
 - `POST /api/campaigns` - Create new campaign
 - `GET /api/campaigns/{id}` - Get specific campaign
@@ -83,12 +92,14 @@ Internet → Cloudflare → Tunnel → Nginx → Backend/Frontend
 - `DELETE /api/campaigns/{id}` - Delete campaign
 
 #### Health
+
 - `GET /health` - Application health check
 - `GET /api/health` - API health check
 
 ### Example Requests
 
 #### Create User
+
 ```bash
 curl -X POST http://localhost/api/users \
   -H "Content-Type: application/json" \
@@ -96,6 +107,7 @@ curl -X POST http://localhost/api/users \
 ```
 
 #### Create Campaign
+
 ```bash
 curl -X POST http://localhost/api/campaigns \
   -H "Content-Type: application/json" \
@@ -110,18 +122,21 @@ curl -X POST http://localhost/api/campaigns \
 ## 🛠️ Development
 
 ### Local Development
+
 ```bash
 ./run.sh dev        # Start development environment
 ./run.sh dev-logs   # View development logs
 ```
 
 ### Testing
+
 ```bash
 ./run.sh test       # Run API integration tests
 ./run.sh health     # Quick health check
 ```
 
 ### Database Operations
+
 ```bash
 ./run.sh db-shell   # Connect to database
 ./run.sh backup     # Create backup
@@ -133,23 +148,27 @@ curl -X POST http://localhost/api/campaigns \
 The `./run.sh` script provides convenient access to all operations:
 
 ### Deployment
+
 - `./run.sh validate` - Validate configuration
 - `./run.sh deploy` - Full deployment
 - `./run.sh setup-tunnel` - Configure Cloudflare Tunnel
 
 ### Monitoring
+
 - `./run.sh status` - System status overview
 - `./run.sh logs` - View recent logs
 - `./run.sh test` - API integration tests
 - `./run.sh health` - Quick health check
 
 ### Service Management
+
 - `./run.sh start` - Start services
 - `./run.sh stop` - Stop services
 - `./run.sh restart` - Restart services
 - `./run.sh rebuild` - Rebuild and restart
 
 ### Maintenance
+
 - `./run.sh backup` - Database backup
 - `./run.sh clean` - Clean Docker resources
 - `./run.sh update` - Update and restart
@@ -157,6 +176,7 @@ The `./run.sh` script provides convenient access to all operations:
 ## 📊 Monitoring & Maintenance
 
 ### Automated Features
+
 - **Health Checks** - Built-in health monitoring for all services
 - **Automatic Backups** - Daily database backups at 2 AM
 - **Log Rotation** - Automatic log management
@@ -164,6 +184,7 @@ The `./run.sh` script provides convenient access to all operations:
 - **Resource Monitoring** - System resource tracking
 
 ### Manual Monitoring
+
 ```bash
 ./run.sh status     # Comprehensive system status
 ./run.sh logs       # Recent logs from all services
@@ -200,12 +221,14 @@ music-campaign-backend/
 ## 🔄 CI/CD and Updates
 
 ### Update Deployment
+
 ```bash
 git pull origin main
 ./run.sh update
 ```
 
 ### Rollback
+
 ```bash
 git checkout previous-commit
 ./run.sh rebuild
@@ -216,6 +239,7 @@ git checkout previous-commit
 ### Common Issues
 
 #### Services Won't Start
+
 ```bash
 ./run.sh status        # Check service status
 docker-compose logs    # View error logs
@@ -223,18 +247,21 @@ docker-compose logs    # View error logs
 ```
 
 #### Database Connection Issues
+
 ```bash
 ./run.sh db-shell     # Test database connection
 ./run.sh db-reset     # Reset database if needed
 ```
 
 #### Tunnel Not Working
+
 ```bash
 sudo systemctl status cloudflared  # Check tunnel service
 sudo journalctl -u cloudflared -f  # View tunnel logs
 ```
 
 ### Performance Issues
+
 ```bash
 docker stats          # Check resource usage
 ./run.sh clean        # Clean up Docker resources
@@ -244,6 +271,7 @@ free -h && df -h      # Check system resources
 ## 🔮 Future Enhancements
 
 ### Planned Features
+
 - [ ] OAuth2 authentication (Google, Spotify, Apple)
 - [ ] Social media integrations (Instagram, TikTok, Twitter)
 - [ ] Analytics dashboard
@@ -255,6 +283,7 @@ free -h && df -h      # Check system resources
 - [ ] Webhook notifications
 
 ### Technical Improvements
+
 - [ ] Redis caching layer
 - [ ] Elasticsearch for search
 - [ ] Message queue (Celery)
@@ -266,10 +295,12 @@ free -h && df -h      # Check system resources
 ## 📞 Support
 
 ### Documentation
+
 - [DEPLOYMENT.md](./DEPLOYMENT.md) - Comprehensive deployment guide
 - [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) - Step-by-step checklist
 
 ### Quick Help
+
 ```bash
 ./run.sh help         # Available commands
 ./run.sh status       # System health check
@@ -277,6 +308,7 @@ free -h && df -h      # Check system resources
 ```
 
 ### Community
+
 - GitHub Issues: Report bugs and request features
 - Discussions: Share ideas and get help
 
@@ -299,6 +331,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Your music marketing campaign backend is ready for production at **https://xsigned.ai**
 
 **Next Steps:**
+
 1. Deploy your React frontend
 2. Connect to social media APIs
 3. Implement OAuth authentication
