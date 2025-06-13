@@ -33,13 +33,30 @@ services:
       - .:/app  # Hot reloading for backend
       - ./logs:/app/logs
     ports:
-      - "5001:5001"
+      - "5001:5001"  # Direct access for debugging
     depends_on:
       postgres:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    container_name: music_nginx_dev
+    ports:
+      - "80:80"  # Main API access point
+    volumes:
+      - ./nginx-dev.conf:/etc/nginx/nginx.conf:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
       interval: 30s
       timeout: 10s
       retries: 3

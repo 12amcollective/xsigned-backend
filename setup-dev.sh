@@ -118,7 +118,7 @@ if [ -d "$FRONTEND_DIR" ]; then
     if [ ! -f ".env.development" ]; then
         cat > .env.development << EOF
 # Frontend Development Environment
-VITE_API_URL=http://192.168.86.70:5001/api
+VITE_API_URL=http://192.168.86.70/api
 VITE_ENV=development
 VITE_APP_NAME="XSigned - Music Campaign Manager (Dev)"
 VITE_DEBUG=true
@@ -141,6 +141,10 @@ fi
 
 # Return to backend directory
 cd "$BACKEND_DIR"
+
+# Create necessary directories
+print_info "Creating log directories..."
+mkdir -p logs/nginx
 
 # Build and start development services
 print_info "Building and starting development services..."
@@ -187,32 +191,38 @@ fi
 # Check backend
 check_service "Backend API" "http://localhost:5001/health"
 
+# Check nginx proxy
+check_service "Nginx Proxy" "http://localhost/health"
+
 print_success "Development environment is ready!"
 echo ""
 echo "📊 Service Status:"
 docker-compose -f docker-compose.dev.yml ps
 echo ""
 echo "🌐 Access URLs:"
-echo "  • Backend API: http://192.168.86.70:5001"
-echo "  • Backend Health: http://192.168.86.70:5001/health"
+echo "  • API via Nginx: http://192.168.86.70/api/"
+echo "  • API Direct: http://192.168.86.70:5001/api/"
+echo "  • Health Check: http://192.168.86.70/health"
 echo "  • Database: localhost:5432 (from Pi)"
 echo ""
 echo "🛠️ Development Commands:"
-echo "  • View logs: docker-compose -f docker-compose.dev.yml logs -f"
-echo "  • Restart backend: docker-compose -f docker-compose.dev.yml restart backend"
+echo "  • View all logs: docker-compose -f docker-compose.dev.yml logs -f"
+echo "  • View nginx logs: docker-compose -f docker-compose.dev.yml logs -f nginx"
+echo "  • View backend logs: docker-compose -f docker-compose.dev.yml logs -f backend"
+echo "  • Restart services: docker-compose -f docker-compose.dev.yml restart"
 echo "  • Stop services: docker-compose -f docker-compose.dev.yml down"
 echo "  • Database shell: docker-compose -f docker-compose.dev.yml exec postgres psql -U backend_user -d music_campaigns"
 echo ""
 echo "📝 Development Workflow:"
 if [ -d "$FRONTEND_DIR" ]; then
     echo "  1. Frontend on Pi: cd $FRONTEND_DIR && npm run dev"
-    echo "  2. Or run frontend locally with VITE_API_URL=http://192.168.86.70:5001/api"
+    echo "  2. Or run frontend locally with VITE_API_URL=http://192.168.86.70/api"
 else
     echo "  1. Run frontend locally: npm run dev"
-    echo "  2. Set VITE_API_URL=http://192.168.86.70:5001/api in your local .env.development"
+    echo "  2. Your frontend Vite proxy should now work with http://192.168.86.70/api"
 fi
-echo "  3. Backend is running on Pi at http://192.168.86.70:5001"
-echo "  4. Test API connectivity from frontend"
+echo "  3. Backend + Nginx running on Pi at http://192.168.86.70"
+echo "  4. Test API: curl http://192.168.86.70/api/users"
 echo "  5. Check logs if anything isn't working"
 echo ""
 print_success "Development setup completed! 🎉"
