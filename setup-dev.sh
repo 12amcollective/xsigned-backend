@@ -110,34 +110,13 @@ else
     print_success "Development environment file already exists"
 fi
 
-# Setup frontend environment (optional for development)
-if [ -d "$FRONTEND_DIR" ]; then
-    print_info "Setting up frontend development environment..."
-    cd "$FRONTEND_DIR"
-
-    if [ ! -f ".env.development" ]; then
-        cat > .env.development << EOF
-# Frontend Development Environment
-VITE_API_URL=http://192.168.86.70/api
-VITE_ENV=development
-VITE_APP_NAME="XSigned - Music Campaign Manager (Dev)"
-VITE_DEBUG=true
-EOF
-        print_success "Frontend development environment created"
-    fi
-
-    # Install frontend dependencies if needed
-    if [ ! -d "node_modules" ]; then
-        print_info "Installing frontend dependencies..."
-        npm install
-        print_success "Frontend dependencies installed"
-    fi
-else
-    print_info "Skipping frontend setup - run locally with npm run dev"
-    print_info "Use these environment variables in your local frontend:"
-    echo "  VITE_API_URL=http://192.168.86.70:5001/api"
-    echo "  VITE_ENV=development"
-fi
+# Frontend setup is not needed on Pi - run locally instead
+print_info "Frontend setup: Run locally on your development machine"
+print_info "For your local frontend, use these environment variables:"
+echo "  VITE_API_URL=http://192.168.86.70/api"
+echo "  VITE_ENV=development"
+echo ""
+print_info "Your Vite proxy should target: http://192.168.86.70/api"
 
 # Return to backend directory
 cd "$BACKEND_DIR"
@@ -214,13 +193,8 @@ echo "  • Stop services: docker-compose -f docker-compose.dev.yml down"
 echo "  • Database shell: docker-compose -f docker-compose.dev.yml exec postgres psql -U backend_user -d music_campaigns"
 echo ""
 echo "📝 Development Workflow:"
-if [ -d "$FRONTEND_DIR" ]; then
-    echo "  1. Frontend on Pi: cd $FRONTEND_DIR && npm run dev"
-    echo "  2. Or run frontend locally with VITE_API_URL=http://192.168.86.70/api"
-else
-    echo "  1. Run frontend locally: npm run dev"
-    echo "  2. Your frontend Vite proxy should now work with http://192.168.86.70/api"
-fi
+echo "  1. Run frontend locally: npm run dev (on your development machine)"
+echo "  2. Your frontend Vite proxy should now work with http://192.168.86.70/api"
 echo "  3. Backend + Nginx running on Pi at http://192.168.86.70"
 echo "  4. Test API: curl http://192.168.86.70/api/users"
 echo "  5. Check logs if anything isn't working"
