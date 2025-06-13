@@ -49,6 +49,13 @@ show_usage() {
     echo "  restart       - Restart all services"
     echo "  rebuild       - Rebuild and restart services"
     echo ""
+    echo "🛠️ Development:"
+    echo "  dev           - Start development environment"
+    echo "  dev-logs      - View development logs"
+    echo "  dev-stop      - Stop development environment"
+    echo "  dev-test      - Test development environment"
+    echo "  setup-dev     - Initial development setup"
+    echo ""
     echo "🗄️  Database:"
     echo "  backup        - Create database backup"
     echo "  db-shell      - Connect to database shell"
@@ -187,13 +194,34 @@ case "${1:-help}" in
     
     "dev")
         print_header "🛠️  Starting development environment..."
-        docker-compose -f docker-compose.dev.yml up -d
-        print_success "Development environment started"
+        if [ ! -f ".env.dev" ]; then
+            print_info "Creating development environment file..."
+            ./setup-dev.sh
+        else
+            docker-compose -f docker-compose.dev.yml --env-file .env.dev up -d
+            print_success "Development environment started"
+        fi
         ;;
     
     "dev-logs")
         print_header "📋 Development logs..."
         docker-compose -f docker-compose.dev.yml logs -f
+        ;;
+    
+    "dev-stop")
+        print_header "⏹️  Stopping development environment..."
+        docker-compose -f docker-compose.dev.yml down
+        print_success "Development environment stopped"
+        ;;
+    
+    "dev-test")
+        print_header "🧪 Testing development environment..."
+        ./test-dev.sh
+        ;;
+    
+    "setup-dev")
+        print_header "⚙️  Setting up development environment..."
+        ./setup-dev.sh
         ;;
     
     "shell")

@@ -1,15 +1,48 @@
 version: '3.8'
 
 services:
-  backend:
-    environment:
-      FLASK_ENV: development
-      FLASK_DEBUG: true
-    volumes:
-      - .:/app
-    ports:
-      - "5001:5001"
-  
   postgres:
+    image: postgres:15
+    container_name: music_postgres_dev
+    environment:
+      POSTGRES_DB: music_campaigns
+      POSTGRES_USER: backend_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password}
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U backend_user -d music_campaigns"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  backend:
+    build: .
+    container_name: music_backend_dev
+    environment:
+      DATABASE_URL: postgresql://backend_user:${DB_PASSWORD:-dev_password}@postgres:5432/music_campaigns
+      FLASK_ENV: development
+      FLASK_DEBUG: true
+      FLASK_SECRET_KEY: ${FLASK_SECRET_KEY:-dev_secret_key}
+      LOG_LEVEL: ${LOG_LEVEL:-DEBUG}
+    volumes:
+      - .:/app  # Hot reloading for backend
+      - ./logs:/app/logs
+    ports:
+      - "5001:5001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_dev_data:
