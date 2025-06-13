@@ -8,7 +8,7 @@ This guide will help you set up and test your music campaign backend in developm
 
    ```
    /home/your-username/
-   ├── music-campaign-backend/    # This repo
+   ├── xsigned-backend/          # This repo
    └── XSignedAI/                # Your frontend repo
    ```
 
@@ -23,7 +23,7 @@ This guide will help you set up and test your music campaign backend in developm
 
 ```bash
 # On your local machine
-scp -r music-campaign-backend/ ubuntu@192.168.86.70:~/
+scp -r xsigned-backend/ ubuntu@192.168.86.70:~/
 ```
 
 ### 2. SSH to Pi and Setup
@@ -33,7 +33,7 @@ scp -r music-campaign-backend/ ubuntu@192.168.86.70:~/
 ssh ubuntu@192.168.86.70
 
 # Navigate to backend
-cd ~/music-campaign-backend
+cd ~/xsigned-backend
 
 # Run initial development setup
 ./run.sh setup-dev

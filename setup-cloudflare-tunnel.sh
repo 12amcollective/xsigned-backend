@@ -38,7 +38,7 @@ else
 fi
 
 # Create tunnel if it doesn't exist
-TUNNEL_NAME="music-campaign"
+TUNNEL_NAME="xsigned-backend"
 if ! cloudflared tunnel list | grep -q "$TUNNEL_NAME"; then
     echo "🔧 Creating tunnel: $TUNNEL_NAME"
     cloudflared tunnel create "$TUNNEL_NAME"

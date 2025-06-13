@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Music Campaign Backend - Task Runner
+# XSigned Backend - Task Runner
 # Provides convenient commands for common operations
 
 set -e
@@ -25,7 +25,7 @@ print_info() {
 
 # Function to show usage
 show_usage() {
-    echo "🎵 Music Campaign Backend - Task Runner"
+    echo "🎵 XSigned Backend - Task Runner"
     echo "======================================="
     echo ""
     echo "Usage: ./run.sh <command>"

@@ -1,4 +1,4 @@
-# 🎵 Music Campaign Backend
+# 🎵 XSigned Backend
 
 A comprehensive Flask-based backend for managing music marketing campaigns, designed for deployment on Raspberry Pi with Cloudflare Tunnel for secure, reliable access.
 
@@ -25,8 +25,8 @@ A comprehensive Flask-based backend for managing music marketing campaigns, desi
 ### 1. Clone and Setup
 
 ```bash
-git clone https://github.com/your-username/music-campaign-backend.git
-cd music-campaign-backend
+git clone https://github.com/your-username/xsigned-backend.git
+cd xsigned-backend
 ./run.sh env-setup  # Creates .env from template
 ```
 
@@ -203,7 +203,7 @@ docker stats        # Real-time resource usage
 ## 📁 Project Structure
 
 ```
-music-campaign-backend/
+xsigned-backend/
 ├── src/                    # Application source code
 │   ├── app.py             # Main Flask application
 │   ├── models/            # Database models

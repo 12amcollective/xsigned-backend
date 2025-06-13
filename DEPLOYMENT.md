@@ -1,6 +1,6 @@
-# Music Campaign Backend - Cloudflare Tunnel Deployment Guide
+# XSigned Backend - Cloudflare Tunnel Deployment Guide
 
-This guide will help you deploy the Music Campaign Backend to your Raspberry Pi using Cloudflare Tunnel for secure, reliable access without port forwarding.
+This guide will help you deploy the XSigned Backend to your Raspberry Pi using Cloudflare Tunnel for secure, reliable access without port forwarding.
 
 ## 🚀 Quick Start
 
@@ -15,8 +15,8 @@ This guide will help you deploy the Music Campaign Backend to your Raspberry Pi 
 
 ```bash
 # On your Raspberry Pi
-git clone https://github.com/your-username/music-campaign-backend.git
-cd music-campaign-backend
+git clone https://github.com/your-username/xsigned-backend.git
+cd xsigned-backend
 
 # Copy environment template
 cp .env.example .env
@@ -77,7 +77,7 @@ If you prefer to set up the tunnel manually:
 1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/)
 2. Navigate to **Zero Trust** → **Access** → **Tunnels**
 3. Click **Create a tunnel**
-4. Name it `music-campaign`
+4. Name it `xsigned-backend`
 5. Choose **Cloudflared** connector
 6. Copy the token and add it to `.env` file
 

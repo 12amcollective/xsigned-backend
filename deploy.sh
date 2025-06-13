@@ -36,8 +36,8 @@ if [ ! -f .env ]; then
 fi
 
 # Check if frontend directory exists
-if [ ! -d "../music-campaign-frontend" ]; then
-    echo "⚠️  Frontend directory not found. Please clone your React app to ../music-campaign-frontend"
+if [ ! -d "../XSignedAI" ]; then
+    echo "⚠️  Frontend directory not found. Please clone your React app to ../XSignedAI"
     echo "   Or update the path in docker-compose.yml"
     exit 1
 fi

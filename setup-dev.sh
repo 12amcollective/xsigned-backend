@@ -39,7 +39,7 @@ fi
 # Check required repositories
 print_info "Checking repository structure..."
 
-BACKEND_DIR="/home/$USER/music-campaign-backend"
+BACKEND_DIR="/home/$USER/xsigned-backend"
 FRONTEND_DIR="/home/$USER/XSignedAI"
 
 if [ ! -d "$BACKEND_DIR" ]; then

@@ -1,4 +1,4 @@
--- Database initialization script for Music Campaign Backend
+-- Database initialization script for XSigned Backend
 -- This script ensures proper setup and performance optimizations
 
 -- Create extensions if they don't exist
@@ -27,7 +27,7 @@ SELECT pg_reload_conf();
 -- Log successful initialization
 DO $$
 BEGIN
-    RAISE NOTICE 'Music Campaign Database initialized successfully';
+    RAISE NOTICE 'XSigned Backend Database initialized successfully';
     RAISE NOTICE 'Database: music_campaigns';
     RAISE NOTICE 'User: backend_user';
     RAISE NOTICE 'Extensions: uuid-ossp, pg_stat_statements';

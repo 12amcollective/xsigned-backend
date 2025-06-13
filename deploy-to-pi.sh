@@ -9,7 +9,7 @@ echo "🚀 Starting deployment of Music Campaign Backend to Raspberry Pi..."
 echo "=================================================="
 
 # Configuration
-PROJECT_NAME="music-campaign-backend"
+PROJECT_NAME="xsigned-backend"
 DOMAIN="xsigned.ai"
 PI_USER="ubuntu"  # Change this to your Pi username
 DEPLOY_DIR="/home/$PI_USER/$PROJECT_NAME"
@@ -191,8 +191,8 @@ print_status "Setting up monitoring scripts..."
 # Create restart script
 cat > restart-services.sh << 'EOF'
 #!/bin/bash
-echo "🔄 Restarting Music Campaign services..."
-cd /home/ubuntu/music-campaign-backend
+echo "🔄 Restarting XSigned services..."
+cd /home/ubuntu/xsigned-backend
 docker-compose -f docker-compose.production.yml restart
 echo "✅ Services restarted"
 EOF
@@ -207,7 +207,7 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="$BACKUP_DIR/music_campaigns_$TIMESTAMP.sql"
 
 echo "📦 Creating database backup..."
-cd /home/ubuntu/music-campaign-backend
+cd /home/ubuntu/xsigned-backend
 docker-compose -f docker-compose.production.yml exec -T postgres pg_dump -U backend_user music_campaigns > "$BACKUP_FILE"
 echo "✅ Backup created: $BACKUP_FILE"
 

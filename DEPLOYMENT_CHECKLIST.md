@@ -1,4 +1,4 @@
-# 🚀 Music Campaign Backend - Deployment Checklist
+# 🚀 XSigned Backend - Deployment Checklist
 
 Follow this checklist to deploy your music marketing campaign backend to Raspberry Pi with Cloudflare Tunnel.
 
@@ -31,7 +31,7 @@ Follow this checklist to deploy your music marketing campaign backend to Raspber
 
 ```bash
 # On your local machine
-scp -r music-campaign-backend/ ubuntu@YOUR_PI_IP:~/
+scp -r xsigned-backend/ ubuntu@YOUR_PI_IP:~/
 ```
 
 ### Step 2: SSH to Pi and Deploy
@@ -41,7 +41,7 @@ scp -r music-campaign-backend/ ubuntu@YOUR_PI_IP:~/
 ssh ubuntu@YOUR_PI_IP
 
 # Navigate to project
-cd ~/music-campaign-backend
+cd ~/xsigned-backend
 
 # Run deployment
 ./deploy-to-pi.sh
