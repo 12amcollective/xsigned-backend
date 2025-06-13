@@ -50,13 +50,13 @@ services:
 
   frontend:
     build:
-      context: ../music-campaign-frontend
-      dockerfile: ../music-campaign-backend/Dockerfile.frontend
+      context: ../XSignedAI
+      dockerfile: Dockerfile.frontend
     container_name: music_frontend
     environment:
-      REACT_APP_API_URL: ${API_URL:-https://xsigned.ai/api}
-      REACT_APP_ENV: production
-      REACT_APP_DOMAIN: ${DOMAIN:-xsigned.ai}
+      VITE_API_URL: ${API_URL:-https://xsigned.ai/api}
+      VITE_ENV: production
+      VITE_APP_NAME: "XSignedAI - Music Campaign Manager"
     depends_on:
       backend:
         condition: service_healthy
@@ -75,9 +75,11 @@ services:
     container_name: music_nginx
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./nginx-cloudflare.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx-production.conf:/etc/nginx/nginx.conf:ro
       - ./logs/nginx:/var/log/nginx
+      - ./ssl:/etc/nginx/ssl
     depends_on:
       backend:
         condition: service_healthy
