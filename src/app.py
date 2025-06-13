@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from src.routes.users import users_bp
 from src.routes.campaigns import campaigns_bp
+from src.routes.waitlist import waitlist_bp
 from src.database.connection import init_db
 import os
 import logging
@@ -35,6 +36,7 @@ def create_app():
     # Register blueprints
     app.register_blueprint(users_bp)
     app.register_blueprint(campaigns_bp)
+    app.register_blueprint(waitlist_bp)
     
     # Initialize database
     init_db()
