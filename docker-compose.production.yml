@@ -50,13 +50,13 @@ services:
 
   frontend:
     build:
-      context: ../XSignedAI
+      context: ../xsigned
       dockerfile: Dockerfile.frontend
     container_name: music_frontend
     environment:
       VITE_API_URL: ${API_URL:-https://xsigned.ai/api}
       VITE_ENV: production
-      VITE_APP_NAME: "XSignedAI - Music Campaign Manager"
+      VITE_APP_NAME: "XSigned - Music Campaign Manager"
     depends_on:
       backend:
         condition: service_healthy

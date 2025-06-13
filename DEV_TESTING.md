@@ -1,57 +1,137 @@
 # 🚀 Development Testing Guide for Raspberry Pi
 
-This guide will help you set up and test your music campaign backend in development mode on your Raspberry Pi.
+This guide covers the optimal development workflow:
+
+- **Backend**: Runs on Raspberry Pi via Docker (http://192.168.86.70:5001)
+- **Frontend**: Runs locally with `npm run dev` (connects to Pi backend)
+- **Database**: PostgreSQL on Pi via Docker
 
 ## 📋 Prerequisites
 
 1. **Repository Structure** on your Pi:
 
    ```
-   /home/your-username/
-   ├── xsigned-backend/          # This repo
-   └── XSignedAI/                # Your frontend repo
+   /home/colin/
+   ├── xsigned-backend/          # This repo (backend)
+   └── xsigned/                  # Your frontend repo (optional)
    ```
 
+   **Recommended Workflow**: Run frontend locally on your development machine for faster iteration, while backend and database run on Pi.
+
 2. **Required Software**:
-   - Docker and Docker Compose
-   - Git
-   - curl (for testing)
+   - **On Pi**: Docker and Docker Compose, Git
+   - **Local Machine**: Node.js, npm, curl (for testing)
 
 ## 🛠️ Setup Development Environment
 
-### 1. Transfer Files to Pi
+### Step 1: Deploy Backend to Pi
 
 ```bash
-# On your local machine
-scp -r xsigned-backend/ ubuntu@192.168.86.70:~/
+# Option 1: Use the automated deployment script (recommended)
+./run.sh deploy-dev
+
+# Option 2: Manual deployment
+scp -r . colin@192.168.86.70:/home/colin/xsigned-backend/
+ssh colin@192.168.86.70 "cd /home/colin/xsigned-backend && ./setup-dev.sh"
 ```
 
-### 2. SSH to Pi and Setup
+### Step 2: Setup Local Frontend
 
 ```bash
-# SSH to your Pi
-ssh ubuntu@192.168.86.70
+# On your local machine, in your frontend directory
+cd /path/to/your/xsigned-frontend
 
-# Navigate to backend
-cd ~/xsigned-backend
+# Create development environment file
+cat > .env.development << EOF
+VITE_API_URL=http://192.168.86.70:5001/api
+VITE_ENV=development
+VITE_APP_NAME=XSigned - Music Campaign Manager (Dev)
+VITE_DEBUG=true
+EOF
 
-# Run initial development setup
-./run.sh setup-dev
+# Install dependencies and start development server
+npm install
+npm run dev
 ```
 
-This will:
-
-- ✅ Install Docker if needed
-- ✅ Check repository structure
-- ✅ Create development environment files
-- ✅ Setup frontend dependencies
-- ✅ Start development services
-
-### 3. Test the Setup
+### Step 3: Test Integration
 
 ```bash
-# Test the development environment
-./run.sh dev-test
+# Test backend health from your local machine
+curl http://192.168.86.70:5001/health
+
+# Test CORS (should work from your frontend)
+curl -H "Origin: http://localhost:5173" \
+     -H "Access-Control-Request-Method: GET" \
+     -H "Access-Control-Request-Headers: Content-Type" \
+     -X OPTIONS \
+     http://192.168.86.70:5001/api/users
+```
+
+### Step 3: Test Integration
+
+```bash
+# Test backend health from your local machine
+curl http://192.168.86.70:5001/health
+
+# Test CORS (should work from your frontend)
+curl -H "Origin: http://localhost:5173" \
+     -H "Access-Control-Request-Method: GET" \
+     -H "Access-Control-Request-Headers: Content-Type" \
+     -X OPTIONS \
+     http://192.168.86.70:5001/api/users
+```
+
+## 💻 Daily Development Workflow
+
+### The Optimal Setup
+
+1. **Backend & Database**: Running on Pi (http://192.168.86.70:5001)
+2. **Frontend**: Running locally on your machine (http://localhost:5173)
+3. **Code Changes**: Edit locally, sync to Pi as needed
+
+### Starting Your Development Session
+
+```bash
+# 1. Ensure backend is running on Pi
+ssh colin@192.168.86.70 "cd /home/colin/xsigned-backend && ./run.sh dev"
+
+# 2. Start frontend locally (from your machine)
+cd /path/to/your/frontend
+npm run dev
+```
+
+### Making Changes
+
+#### Frontend Changes (Instant Feedback)
+
+- Edit your React components locally
+- Changes automatically reload at http://localhost:5173
+- API calls go to http://192.168.86.70:5001/api
+
+#### Backend Changes (Deploy to Pi)
+
+```bash
+# Option 1: Quick sync (for small changes)
+rsync -av --exclude node_modules --exclude .git . colin@192.168.86.70:/home/colin/xsigned-backend/
+
+# Option 2: Git workflow (recommended)
+git add . && git commit -m "Backend changes"
+git push
+ssh colin@192.168.86.70 "cd /home/colin/xsigned-backend && git pull && docker-compose -f docker-compose.dev.yml restart backend"
+```
+
+### Testing Your Changes
+
+```bash
+# Test API from your local machine
+curl http://192.168.86.70:5001/api/users
+
+# Test CORS from frontend origin
+curl -H "Origin: http://localhost:5173" http://192.168.86.70:5001/api/users
+
+# Full development test on Pi
+ssh colin@192.168.86.70 "cd /home/colin/xsigned-backend && ./run.sh dev-test"
 ```
 
 ## 🔧 Development Commands
@@ -78,11 +158,18 @@ curl http://192.168.86.70:5001/health  # Quick health check
 
 ## 🌐 Access URLs
 
-When development is running:
+### Development Environment
 
-- **Backend API**: http://192.168.86.70:5001
+- **Frontend**: http://localhost:5173 (running locally with `npm run dev`)
+- **Backend API**: http://192.168.86.70:5001 (running on Pi)
 - **API Health**: http://192.168.86.70:5001/health
-- **Database**: localhost:5432 (from Pi)
+- **Database**: localhost:5432 (accessible from Pi only)
+
+### Key Configuration
+
+- Frontend connects to: `VITE_API_URL=http://192.168.86.70:5001/api`
+- CORS enabled for: `http://localhost:5173`
+- Hot reloading: Frontend (instant), Backend (on Pi restart)
 
 ## 🧪 Testing API Endpoints
 
@@ -120,32 +207,49 @@ curl http://192.168.86.70:5001/api/users
 curl http://192.168.86.70:5001/api/campaigns
 ```
 
-## 🎯 Frontend Development
+## 🎯 Frontend Development (Recommended: Local)
 
-### 1. Setup Frontend Environment
+### 1. Setup Local Frontend Environment
 
-Your frontend should have these environment variables in `.env.development`:
+Create `.env.development` in your local frontend directory:
 
 ```bash
-VITE_API_URL=http://192.168.86.70/api
+# In your local frontend directory
+cat > .env.development << EOF
+VITE_API_URL=http://192.168.86.70:5001/api
 VITE_ENV=development
-VITE_APP_NAME="XSignedAI - Music Campaign Manager (Dev)"
+VITE_APP_NAME=XSigned - Music Campaign Manager (Dev)
 VITE_DEBUG=true
+EOF
 ```
 
-### 2. Start Frontend Development
+### 2. Start Local Frontend Development
 
 ```bash
-# In your frontend directory
-cd ~/XSignedAI
-npm run dev
+# On your local machine
+cd /path/to/your/xsigned-frontend
+npm install  # First time only
+npm run dev  # Starts at http://localhost:5173
 ```
 
-### 3. Test Integration
+### 3. Development Benefits
 
-- Frontend should connect to backend API
-- CORS should be configured properly
-- API calls should work from browser
+- ⚡ **Instant Hot Reload**: Changes appear immediately
+- 🔧 **Full Dev Tools**: Browser dev tools, React DevTools, etc.
+- 🚀 **Fast Iteration**: No file transfer delays
+- 🌐 **CORS Handled**: Backend configured for localhost:5173
+
+### 4. Test Integration
+
+```bash
+# Test API connectivity from your browser console
+fetch('http://192.168.86.70:5001/api/users')
+  .then(r => r.json())
+  .then(console.log)
+
+# Or test from command line
+curl -H "Origin: http://localhost:5173" http://192.168.86.70:5001/api/users
+```
 
 ## 🔍 Troubleshooting
 

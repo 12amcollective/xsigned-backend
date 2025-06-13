@@ -31,8 +31,8 @@ if [ ! -f .env ]; then
 fi
 
 # Check if frontend directory exists
-if [ ! -d "../XSignedAI" ]; then
-    echo "⚠️  Frontend directory not found. Please clone your React app to ../XSignedAI"
+if [ ! -d "../xsigned" ]; then
+    echo "⚠️  Frontend directory not found. Please clone your React app to ../xsigned"
     exit 1
 fi
 

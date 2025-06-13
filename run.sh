@@ -50,10 +50,12 @@ show_usage() {
     echo "  rebuild       - Rebuild and restart services"
     echo ""
     echo "🛠️ Development:"
+    echo "  deploy-dev    - Deploy backend to Pi for development"
     echo "  dev           - Start development environment"
     echo "  dev-logs      - View development logs"
     echo "  dev-stop      - Stop development environment"
     echo "  dev-test      - Test development environment"
+    echo "  dev-status    - Check development environment status"
     echo "  setup-dev     - Initial development setup"
     echo ""
     echo "🗄️  Database:"
@@ -67,6 +69,7 @@ show_usage() {
     echo "  env-setup     - Set up environment file"
     echo ""
     echo "Examples:"
+    echo "  ./run.sh deploy-dev  # Deploy backend to Pi for development"
     echo "  ./run.sh validate    # Check if ready to deploy"
     echo "  ./run.sh deploy      # Full deployment to Pi"
     echo "  ./run.sh status      # Check system health"
@@ -85,6 +88,11 @@ case "${1:-help}" in
         ./validate-deployment.sh
         ./deploy-to-pi.sh
         print_success "Deployment completed!"
+        ;;
+    
+    "deploy-dev")
+        print_header "🛠️  Deploying development backend to Pi..."
+        ./deploy-dev-to-pi.sh
         ;;
     
     "setup-tunnel")
@@ -217,6 +225,11 @@ case "${1:-help}" in
     "dev-test")
         print_header "🧪 Testing development environment..."
         ./test-dev.sh
+        ;;
+    
+    "dev-status")
+        print_header "🔍 Checking development environment status..."
+        ./check-dev-status.sh
         ;;
     
     "setup-dev")

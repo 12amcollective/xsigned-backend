@@ -40,7 +40,7 @@ fi
 print_info "Checking repository structure..."
 
 BACKEND_DIR="/home/$USER/xsigned-backend"
-FRONTEND_DIR="/home/$USER/XSignedAI"
+FRONTEND_DIR="/home/$USER/xsigned"
 
 if [ ! -d "$BACKEND_DIR" ]; then
     print_error "Backend repository not found at $BACKEND_DIR"
@@ -49,14 +49,17 @@ if [ ! -d "$BACKEND_DIR" ]; then
     exit 1
 fi
 
-if [ ! -d "$FRONTEND_DIR" ]; then
-    print_error "Frontend repository not found at $FRONTEND_DIR"
-    echo "Please clone the frontend repository first:"
-    echo "git clone <your-frontend-repo> $FRONTEND_DIR"
-    exit 1
-fi
+print_success "Backend repository verified"
 
-print_success "Repository structure verified"
+# Frontend is optional for development - you can run it locally
+if [ ! -d "$FRONTEND_DIR" ]; then
+    print_warning "Frontend repository not found at $FRONTEND_DIR"
+    print_info "For development, you can run the frontend locally with 'npm run dev'"
+    print_info "The backend will be accessible at http://192.168.86.70:5001"
+    print_info "Configure your local frontend to use VITE_API_URL=http://192.168.86.70:5001/api"
+else
+    print_success "Frontend repository found (optional for development)"
+fi
 
 # Check Docker
 print_info "Checking Docker installation..."
@@ -100,33 +103,40 @@ DOMAIN=192.168.86.70
 # Frontend environment variables
 VITE_API_URL=http://192.168.86.70/api
 VITE_ENV=development
-VITE_APP_NAME="XSignedAI - Music Campaign Manager (Dev)"
+VITE_APP_NAME="XSigned - Music Campaign Manager (Dev)"
 EOF
     print_success "Development environment file created"
 else
     print_success "Development environment file already exists"
 fi
 
-# Setup frontend environment
-print_info "Setting up frontend development environment..."
-cd "$FRONTEND_DIR"
+# Setup frontend environment (optional for development)
+if [ -d "$FRONTEND_DIR" ]; then
+    print_info "Setting up frontend development environment..."
+    cd "$FRONTEND_DIR"
 
-if [ ! -f ".env.development" ]; then
-    cat > .env.development << EOF
+    if [ ! -f ".env.development" ]; then
+        cat > .env.development << EOF
 # Frontend Development Environment
-VITE_API_URL=http://192.168.86.70/api
+VITE_API_URL=http://192.168.86.70:5001/api
 VITE_ENV=development
-VITE_APP_NAME="XSignedAI - Music Campaign Manager (Dev)"
+VITE_APP_NAME="XSigned - Music Campaign Manager (Dev)"
 VITE_DEBUG=true
 EOF
-    print_success "Frontend development environment created"
-fi
+        print_success "Frontend development environment created"
+    fi
 
-# Install frontend dependencies if needed
-if [ ! -d "node_modules" ]; then
-    print_info "Installing frontend dependencies..."
-    npm install
-    print_success "Frontend dependencies installed"
+    # Install frontend dependencies if needed
+    if [ ! -d "node_modules" ]; then
+        print_info "Installing frontend dependencies..."
+        npm install
+        print_success "Frontend dependencies installed"
+    fi
+else
+    print_info "Skipping frontend setup - run locally with npm run dev"
+    print_info "Use these environment variables in your local frontend:"
+    echo "  VITE_API_URL=http://192.168.86.70:5001/api"
+    echo "  VITE_ENV=development"
 fi
 
 # Return to backend directory
@@ -185,7 +195,7 @@ echo ""
 echo "🌐 Access URLs:"
 echo "  • Backend API: http://192.168.86.70:5001"
 echo "  • Backend Health: http://192.168.86.70:5001/health"
-echo "  • Database: localhost:5432"
+echo "  • Database: localhost:5432 (from Pi)"
 echo ""
 echo "🛠️ Development Commands:"
 echo "  • View logs: docker-compose -f docker-compose.dev.yml logs -f"
@@ -193,9 +203,16 @@ echo "  • Restart backend: docker-compose -f docker-compose.dev.yml restart ba
 echo "  • Stop services: docker-compose -f docker-compose.dev.yml down"
 echo "  • Database shell: docker-compose -f docker-compose.dev.yml exec postgres psql -U backend_user -d music_campaigns"
 echo ""
-echo "📝 Next Steps:"
-echo "  1. Start your frontend development server: cd $FRONTEND_DIR && npm run dev"
-echo "  2. Test API connectivity from frontend"
-echo "  3. Check logs if anything isn't working"
+echo "📝 Development Workflow:"
+if [ -d "$FRONTEND_DIR" ]; then
+    echo "  1. Frontend on Pi: cd $FRONTEND_DIR && npm run dev"
+    echo "  2. Or run frontend locally with VITE_API_URL=http://192.168.86.70:5001/api"
+else
+    echo "  1. Run frontend locally: npm run dev"
+    echo "  2. Set VITE_API_URL=http://192.168.86.70:5001/api in your local .env.development"
+fi
+echo "  3. Backend is running on Pi at http://192.168.86.70:5001"
+echo "  4. Test API connectivity from frontend"
+echo "  5. Check logs if anything isn't working"
 echo ""
 print_success "Development setup completed! 🎉"

@@ -2,6 +2,17 @@
 
 A comprehensive Flask-based backend for managing music marketing campaigns, designed for deployment on Raspberry Pi with Cloudflare Tunnel for secure, reliable access.
 
+## 🚀 Quick Start Development
+
+**Want to start developing immediately?**
+
+```bash
+./run.sh deploy-dev  # Deploy backend to Pi
+# Then run your frontend locally with npm run dev
+```
+
+See [QUICK_START.md](./QUICK_START.md) for the complete development workflow.
+
 ## 🌟 Features
 
 - **User Management** - Create and manage user accounts with email validation
@@ -55,6 +66,32 @@ DOMAIN=xsigned.ai
 ./run.sh status    # Check system health
 ./run.sh test      # Test API endpoints
 ```
+
+## 🛠️ Development Workflow
+
+For faster development iteration:
+
+1. **Deploy Backend to Pi**: `./run.sh deploy-dev`
+2. **Run Frontend Locally**: `npm run dev` (with `VITE_API_URL=http://192.168.86.70:5001/api`)
+3. **Make Changes**: Frontend auto-reloads, backend deployed to Pi as needed
+
+### Development Commands
+
+```bash
+./run.sh deploy-dev    # Deploy backend to Pi for development
+./run.sh dev           # Start dev environment (on Pi)
+./run.sh dev-logs      # View development logs (on Pi)
+./run.sh dev-test      # Test development setup (on Pi)
+```
+
+### Benefits
+
+- ⚡ Frontend hot reload on your machine
+- 🔄 Backend services isolated on Pi
+- 🌐 Real network testing
+- 💾 Persistent database on Pi
+
+See [DEV_TESTING.md](./DEV_TESTING.md) for detailed development guide.
 
 ## 🏗️ Architecture
 
