@@ -1,4 +1,5 @@
 from src.models.user import User
+from src.models.waitlist import Waitlist  # Add this import
 from src.database.connection import get_db_session
 from sqlalchemy.exc import IntegrityError
 import re
@@ -63,7 +64,62 @@ class UserService:
         with get_db_session() as session:
             try:
                 users = User.get_all(session)
-                return {"users": [user.to_dict() for user in users]}, 200
+                users_data = [user.to_dict() for user in users]
+                
+                return {"users": users_data, "count": len(users_data)}, 200
                 
             except Exception as e:
                 return {"error": f"Failed to retrieve users: {str(e)}"}, 500
+    
+    # New waitlist methods
+    @staticmethod
+    def join_waitlist(email):
+        """Add email to waitlist"""
+        # Validate email format
+        if not UserService.validate_email(email):
+            return {"error": "Invalid email format"}, 400
+        
+        with get_db_session() as session:
+            try:
+                # Check if email already exists in waitlist
+                existing_entry = Waitlist.get_by_email(session, email.lower().strip())
+                if existing_entry:
+                    return {"message": "Email is already on the waitlist", "waitlist_entry": existing_entry.to_dict()}, 200
+                
+                # Create new waitlist entry
+                new_entry = Waitlist(email=email.lower().strip())
+                session.add(new_entry)
+                session.commit()
+                
+                # Get total count for response
+                total_count = Waitlist.count_total(session)
+                
+                return {
+                    "message": "Successfully joined the waitlist",
+                    "waitlist_entry": new_entry.to_dict(),
+                    "total_waitlist_count": total_count
+                }, 201
+                
+            except IntegrityError:
+                session.rollback()
+                return {"error": "Email is already on the waitlist"}, 409
+            except Exception as e:
+                session.rollback()
+                return {"error": f"Failed to join waitlist: {str(e)}"}, 500
+    
+    @staticmethod
+    def get_waitlist_emails():
+        """Get all emails on the waitlist"""
+        with get_db_session() as session:
+            try:
+                waitlist_entries = Waitlist.get_all(session)
+                waitlist_data = [entry.to_dict() for entry in waitlist_entries]
+                
+                return {
+                    "waitlist": waitlist_data,
+                    "total_count": len(waitlist_data),
+                    "unnotified_count": len([entry for entry in waitlist_data if not entry['is_notified']])
+                }, 200
+                
+            except Exception as e:
+                return {"error": f"Failed to retrieve waitlist: {str(e)}"}, 500
