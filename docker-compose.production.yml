@@ -3,25 +3,36 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15
+    container_name: music_postgres
     environment:
       POSTGRES_DB: music_campaigns
       POSTGRES_USER: backend_user
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U backend_user -d music_campaigns"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
+      start_period: 60s
+    networks:
+      - backend-network
 
   backend:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: music_backend
     environment:
       DATABASE_URL: postgresql://backend_user:${DB_PASSWORD}@postgres:5432/music_campaigns
-      FLASK_ENV: production
-      FLASK_DEBUG: false
+      FLASK_ENV: ${FLASK_ENV:-production}
+      FLASK_DEBUG: ${FLASK_DEBUG:-false}
+      FLASK_SECRET_KEY: ${FLASK_SECRET_KEY}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     depends_on:
       postgres:
         condition: service_healthy
@@ -33,40 +44,75 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 45s
+    networks:
+      - backend-network
 
   frontend:
     build:
       context: ../music-campaign-frontend
       dockerfile: ../music-campaign-backend/Dockerfile.frontend
+    container_name: music_frontend
     environment:
-      REACT_APP_API_URL: https://xsigned.ai/api
+      REACT_APP_API_URL: ${API_URL:-https://xsigned.ai/api}
       REACT_APP_ENV: production
+      REACT_APP_DOMAIN: ${DOMAIN:-xsigned.ai}
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
-    volumes:
-      - ../music-campaign-frontend/nginx-frontend.conf:/etc/nginx/conf.d/default.conf
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - backend-network
 
   nginx:
     image: nginx:alpine
+    container_name: music_nginx
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - ./nginx-production.conf:/etc/nginx/nginx.conf
-      - ./ssl:/etc/nginx/ssl
-      - ./certbot:/var/www/certbot
+      - ./nginx-cloudflare.conf:/etc/nginx/nginx.conf:ro
+      - ./logs/nginx:/var/log/nginx
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - backend-network
 
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./ssl:/etc/letsencrypt
-      - ./certbot:/var/www/certbot
-    command: certonly --webroot --webroot-path=/var/www/certbot --email your-email@example.com --agree-tos --no-eff-email -d xsigned.ai -d www.xsigned.ai
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: music_cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      nginx:
+        condition: service_healthy
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD", "cloudflared", "tunnel", "info"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   postgres_data:
+    driver: local
+
+networks:
+  backend-network:
+    driver: bridge
