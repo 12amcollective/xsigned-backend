@@ -48,7 +48,7 @@ services:
     image: nginx:alpine
     container_name: music_nginx_dev
     ports:
-      - "80:80"  # Main API access point
+      - "8080:80"  # Development API access point (avoiding conflict with system nginx)
     volumes:
       - ./nginx-dev.conf:/etc/nginx/nginx.conf:ro
       - ./logs/nginx:/var/log/nginx

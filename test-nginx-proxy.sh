@@ -63,10 +63,10 @@ echo "Testing endpoints..."
 echo ""
 
 # 1. Test health endpoint (should work)
-test_endpoint "Health Check (via nginx)" "http://$PI_HOST/health"
+test_endpoint "Health Check (via nginx)" "http://$PI_HOST:8080/health"
 
 # 2. Test API endpoint (main test)
-test_endpoint "API Users Endpoint" "http://$PI_HOST/api/users"
+test_endpoint "API Users Endpoint" "http://$PI_HOST:8080/api/users"
 
 # 3. Test direct backend (for comparison)
 test_endpoint "Direct Backend Health" "http://$PI_HOST:5001/health"
@@ -75,7 +75,7 @@ test_endpoint "Direct Backend Health" "http://$PI_HOST:5001/health"
 test_endpoint "Direct Backend API" "http://$PI_HOST:5001/api/users"
 
 # 5. Test root endpoint
-test_endpoint "Root Endpoint" "http://$PI_HOST/"
+test_endpoint "Root Endpoint" "http://$PI_HOST:8080/"
 
 echo "🏁 Testing complete!"
 echo ""
@@ -84,5 +84,5 @@ echo "  • Is Docker running? docker ps"
 echo "  • Are services up? docker-compose -f docker-compose.dev.yml ps"
 echo "  • Check nginx logs: docker-compose -f docker-compose.dev.yml logs nginx"
 echo "  • Check backend logs: docker-compose -f docker-compose.dev.yml logs backend"
-echo "  • Test from Pi directly: ssh colin@$PI_HOST 'curl http://localhost/health'"
+echo "  • Test from Pi directly: ssh colin@$PI_HOST 'curl http://localhost:8080/health'"
 echo ""

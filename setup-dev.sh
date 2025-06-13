@@ -101,7 +101,7 @@ API_URL=http://192.168.86.70/api
 DOMAIN=192.168.86.70
 
 # Frontend environment variables
-VITE_API_URL=http://192.168.86.70/api
+VITE_API_URL=http://192.168.86.70:8080/api
 VITE_ENV=development
 VITE_APP_NAME="XSigned - Music Campaign Manager (Dev)"
 EOF
@@ -113,10 +113,10 @@ fi
 # Frontend setup is not needed on Pi - run locally instead
 print_info "Frontend setup: Run locally on your development machine"
 print_info "For your local frontend, use these environment variables:"
-echo "  VITE_API_URL=http://192.168.86.70/api"
+echo "  VITE_API_URL=http://192.168.86.70:8080/api"
 echo "  VITE_ENV=development"
 echo ""
-print_info "Your Vite proxy should target: http://192.168.86.70/api"
+print_info "Your Vite proxy should target: http://192.168.86.70:8080/api"
 
 # Return to backend directory
 cd "$BACKEND_DIR"
@@ -171,7 +171,7 @@ fi
 check_service "Backend API" "http://localhost:5001/health"
 
 # Check nginx proxy
-check_service "Nginx Proxy" "http://localhost/health"
+check_service "Nginx Proxy" "http://localhost:8080/health"
 
 print_success "Development environment is ready!"
 echo ""
@@ -179,9 +179,9 @@ echo "📊 Service Status:"
 docker-compose -f docker-compose.dev.yml ps
 echo ""
 echo "🌐 Access URLs:"
-echo "  • API via Nginx: http://192.168.86.70/api/"
+echo "  • API via Nginx: http://192.168.86.70:8080/api/"
 echo "  • API Direct: http://192.168.86.70:5001/api/"
-echo "  • Health Check: http://192.168.86.70/health"
+echo "  • Health Check: http://192.168.86.70:8080/health"
 echo "  • Database: localhost:5432 (from Pi)"
 echo ""
 echo "🛠️ Development Commands:"
@@ -194,9 +194,9 @@ echo "  • Database shell: docker-compose -f docker-compose.dev.yml exec postgr
 echo ""
 echo "📝 Development Workflow:"
 echo "  1. Run frontend locally: npm run dev (on your development machine)"
-echo "  2. Your frontend Vite proxy should now work with http://192.168.86.70/api"
-echo "  3. Backend + Nginx running on Pi at http://192.168.86.70"
-echo "  4. Test API: curl http://192.168.86.70/api/users"
+echo "  2. Your frontend Vite proxy should now work with http://192.168.86.70:8080/api"
+echo "  3. Backend + Nginx running on Pi at http://192.168.86.70:8080"
+echo "  4. Test API: curl http://192.168.86.70:8080/api/users"
 echo "  5. Check logs if anything isn't working"
 echo ""
 print_success "Development setup completed! 🎉"
