@@ -5,6 +5,7 @@ This guide will help you set up and test your music campaign backend in developm
 ## 📋 Prerequisites
 
 1. **Repository Structure** on your Pi:
+
    ```
    /home/your-username/
    ├── music-campaign-backend/    # This repo
@@ -19,12 +20,14 @@ This guide will help you set up and test your music campaign backend in developm
 ## 🛠️ Setup Development Environment
 
 ### 1. Transfer Files to Pi
+
 ```bash
 # On your local machine
 scp -r music-campaign-backend/ ubuntu@192.168.86.70:~/
 ```
 
 ### 2. SSH to Pi and Setup
+
 ```bash
 # SSH to your Pi
 ssh ubuntu@192.168.86.70
@@ -37,6 +40,7 @@ cd ~/music-campaign-backend
 ```
 
 This will:
+
 - ✅ Install Docker if needed
 - ✅ Check repository structure
 - ✅ Create development environment files
@@ -44,6 +48,7 @@ This will:
 - ✅ Start development services
 
 ### 3. Test the Setup
+
 ```bash
 # Test the development environment
 ./run.sh dev-test
@@ -52,18 +57,21 @@ This will:
 ## 🔧 Development Commands
 
 ### Start Development
+
 ```bash
 ./run.sh dev           # Start development environment
 ./run.sh dev-logs      # View logs (Ctrl+C to exit)
 ```
 
 ### Test Development
+
 ```bash
 ./run.sh dev-test      # Run comprehensive tests
 curl http://192.168.86.70:5001/health  # Quick health check
 ```
 
 ### Stop Development
+
 ```bash
 ./run.sh dev-stop      # Stop all development services
 ```
@@ -79,11 +87,13 @@ When development is running:
 ## 🧪 Testing API Endpoints
 
 ### Health Check
+
 ```bash
 curl http://192.168.86.70:5001/health
 ```
 
 ### Create User
+
 ```bash
 curl -X POST http://192.168.86.70:5001/api/users \
   -H "Content-Type: application/json" \
@@ -91,6 +101,7 @@ curl -X POST http://192.168.86.70:5001/api/users \
 ```
 
 ### Create Campaign
+
 ```bash
 curl -X POST http://192.168.86.70:5001/api/campaigns \
   -H "Content-Type: application/json" \
@@ -98,11 +109,13 @@ curl -X POST http://192.168.86.70:5001/api/campaigns \
 ```
 
 ### List Users
+
 ```bash
 curl http://192.168.86.70:5001/api/users
 ```
 
 ### List Campaigns
+
 ```bash
 curl http://192.168.86.70:5001/api/campaigns
 ```
@@ -110,6 +123,7 @@ curl http://192.168.86.70:5001/api/campaigns
 ## 🎯 Frontend Development
 
 ### 1. Setup Frontend Environment
+
 Your frontend should have these environment variables in `.env.development`:
 
 ```bash
@@ -120,6 +134,7 @@ VITE_DEBUG=true
 ```
 
 ### 2. Start Frontend Development
+
 ```bash
 # In your frontend directory
 cd ~/XSignedAI
@@ -127,6 +142,7 @@ npm run dev
 ```
 
 ### 3. Test Integration
+
 - Frontend should connect to backend API
 - CORS should be configured properly
 - API calls should work from browser
@@ -134,6 +150,7 @@ npm run dev
 ## 🔍 Troubleshooting
 
 ### Backend Issues
+
 ```bash
 # Check service status
 ./run.sh dev-test
@@ -149,6 +166,7 @@ docker-compose -f docker-compose.dev.yml exec postgres psql -U backend_user -d m
 ```
 
 ### Network Issues
+
 ```bash
 # Check Pi IP address
 ip addr show
@@ -161,6 +179,7 @@ sudo ufw status
 ```
 
 ### Resource Issues
+
 ```bash
 # Check memory usage
 free -h
@@ -175,6 +194,7 @@ docker system df
 ## 📊 Development Workflow
 
 ### 1. Daily Development
+
 ```bash
 # Start development
 ./run.sh dev
@@ -188,6 +208,7 @@ docker system df
 ```
 
 ### 2. Frontend Development
+
 ```bash
 # Start frontend dev server
 cd ~/XSignedAI
@@ -198,6 +219,7 @@ npm run dev
 ```
 
 ### 3. Database Changes
+
 ```bash
 # Connect to database
 ./run.sh db-shell
@@ -223,6 +245,7 @@ When development testing is complete:
 ## 📞 Need Help?
 
 ### Quick Diagnostics
+
 ```bash
 ./run.sh dev-test      # Comprehensive test
 ./run.sh help          # All available commands
@@ -230,6 +253,7 @@ docker-compose -f docker-compose.dev.yml ps  # Service status
 ```
 
 ### Common Issues
+
 1. **Services won't start**: Check Docker is running, check memory
 2. **Can't connect from frontend**: Verify IP address, check CORS
 3. **Database issues**: Reset with `docker-compose down -v`
@@ -240,6 +264,7 @@ docker-compose -f docker-compose.dev.yml ps  # Service status
 ## 🎉 Success!
 
 Your development environment is ready when:
+
 - ✅ `./run.sh dev-test` passes all tests
 - ✅ Backend API responds at http://192.168.86.70:5001
 - ✅ Frontend can connect to backend
