@@ -36,3 +36,8 @@ class User(Base):
     def get_by_id(cls, session, user_id):
         """Get user by ID"""
         return session.query(cls).filter(cls.id == user_id).first()
+    
+    @classmethod
+    def get_all(cls, session):
+        """Get all users"""
+        return session.query(cls).filter(cls.is_active == True).all()

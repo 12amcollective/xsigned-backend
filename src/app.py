@@ -19,7 +19,11 @@ def create_app():
     
     # Enable CORS for production domains
     cors_origins = [
-        "http://localhost:3000",        # Local development
+        "http://localhost:3000",        # Local development (default)
+        "http://localhost:5173",        # Vite dev server default
+        "http://localhost:5174",        # Your specific frontend port
+        "http://127.0.0.1:5173",        # Local IP variants
+        "http://127.0.0.1:5174",        
         "http://192.168.86.70:3000",   # Pi frontend container
         "http://192.168.86.70",        # Pi nginx proxy
         "https://xsigned.ai",          # Production domain

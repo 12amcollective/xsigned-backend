@@ -3,6 +3,16 @@ from src.services.user_service import UserService
 
 users_bp = Blueprint('users', __name__, url_prefix='/api/users')
 
+@users_bp.route('/', methods=['GET'])
+def get_all_users():
+    """Get all users endpoint"""
+    try:
+        result, status_code = UserService.get_all_users()
+        return jsonify(result), status_code
+        
+    except Exception as e:
+        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+
 @users_bp.route('/', methods=['POST'])
 def create_user():
     """Create a new user endpoint"""

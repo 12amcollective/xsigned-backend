@@ -56,3 +56,14 @@ class UserService:
                 
             except Exception as e:
                 return {"error": f"Failed to retrieve user: {str(e)}"}, 500
+    
+    @staticmethod
+    def get_all_users():
+        """Get all users"""
+        with get_db_session() as session:
+            try:
+                users = User.get_all(session)
+                return {"users": [user.to_dict() for user in users]}, 200
+                
+            except Exception as e:
+                return {"error": f"Failed to retrieve users: {str(e)}"}, 500

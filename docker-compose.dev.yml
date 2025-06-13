@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: backend_user
       POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
@@ -26,7 +26,7 @@ services:
     environment:
       DATABASE_URL: postgresql://backend_user:${DB_PASSWORD:-dev_password}@postgres:5432/music_campaigns
       FLASK_ENV: development
-      FLASK_DEBUG: true
+      FLASK_DEBUG: "true"
       FLASK_SECRET_KEY: ${FLASK_SECRET_KEY:-dev_secret_key}
       LOG_LEVEL: ${LOG_LEVEL:-DEBUG}
     volumes:
