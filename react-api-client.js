@@ -2,8 +2,8 @@
 // Save this as src/config/api.js in your React project
 
 const API_CONFIG = {
-  // Use environment variable or fallback to Pi IP
-  baseURL: process.env.REACT_APP_API_URL || 'http://192.168.86.70/api',
+  // Use environment variable or fallback to production domain
+  baseURL: process.env.REACT_APP_API_URL || 'https://xsigned.ai/api',
   
   // For local development
   localURL: process.env.REACT_APP_API_URL_LOCAL || 'http://localhost:5001/api',
