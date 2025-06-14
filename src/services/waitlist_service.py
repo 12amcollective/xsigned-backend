@@ -27,43 +27,39 @@ class WaitlistService:
             # Normalize email (lowercase)
             email = email.lower().strip()
             
-            session = get_db_session()
-            
-            try:
-                # Check if email already exists
-                existing_entry = Waitlist.get_by_email(session, email)
-                if existing_entry:
+            with get_db_session() as session:
+                try:
+                    # Check if email already exists
+                    existing_entry = Waitlist.get_by_email(session, email)
+                    if existing_entry:
+                        return {
+                            "message": "You're already on the waitlist!", 
+                            "email": email,
+                            "joined_at": existing_entry.joined_at.isoformat()
+                        }, 200
+                    
+                    # Create new waitlist entry
+                    waitlist_entry = Waitlist(email=email)
+                    session.add(waitlist_entry)
+                    session.commit()
+                    
+                    # Get total count for response
+                    total_count = Waitlist.count_total(session)
+                    
+                    logger.info(f"New waitlist signup: {email}")
+                    
                     return {
-                        "message": "You're already on the waitlist!", 
+                        "success": True,
+                        "message": "Successfully joined the waitlist!",
                         "email": email,
-                        "joined_at": existing_entry.joined_at.isoformat()
-                    }, 200
-                
-                # Create new waitlist entry
-                waitlist_entry = Waitlist(email=email)
-                session.add(waitlist_entry)
-                session.commit()
-                
-                # Get total count for response
-                total_count = Waitlist.count_total(session)
-                
-                logger.info(f"New waitlist signup: {email}")
-                
-                return {
-                    "success": True,
-                    "message": "Successfully joined the waitlist!",
-                    "email": email,
-                    "position": total_count,
-                    "joined_at": waitlist_entry.joined_at.isoformat()
-                }, 201
-                
-            except Exception as e:
-                session.rollback()
-                logger.error(f"Database error adding {email} to waitlist: {str(e)}")
-                return {"error": "Failed to join waitlist"}, 500
-                
-            finally:
-                session.close()
+                        "position": total_count,
+                        "joined_at": waitlist_entry.joined_at.isoformat()
+                    }, 201
+                    
+                except Exception as e:
+                    session.rollback()
+                    logger.error(f"Database error adding {email} to waitlist: {str(e)}")
+                    return {"error": "Failed to join waitlist"}, 500
                 
         except Exception as e:
             logger.error(f"Error in join_waitlist: {str(e)}")
@@ -78,18 +74,13 @@ class WaitlistService:
             tuple: (response_dict, status_code)
         """
         try:
-            session = get_db_session()
-            
-            try:
+            with get_db_session() as session:
                 total_count = Waitlist.count_total(session)
                 
                 return {
                     "total_signups": total_count,
                     "status": "active"
                 }, 200
-                
-            finally:
-                session.close()
                 
         except Exception as e:
             logger.error(f"Error getting waitlist stats: {str(e)}")
@@ -104,9 +95,7 @@ class WaitlistService:
             tuple: (response_dict, status_code)
         """
         try:
-            session = get_db_session()
-            
-            try:
+            with get_db_session() as session:
                 entries = Waitlist.get_all(session)
                 waitlist_data = [entry.to_dict() for entry in entries]
                 
@@ -114,9 +103,6 @@ class WaitlistService:
                     "waitlist": waitlist_data,
                     "total": len(waitlist_data)
                 }, 200
-                
-            finally:
-                session.close()
                 
         except Exception as e:
             logger.error(f"Error getting waitlist entries: {str(e)}")
