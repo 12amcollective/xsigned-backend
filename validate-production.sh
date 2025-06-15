@@ -62,6 +62,12 @@ else
         ERRORS=$((ERRORS + 1))
     fi
     
+    if grep -q "your-32-byte-base64-key-change-this" .env; then
+        print_error "Encryption key not set in .env"
+        echo "  Run: ./generate-secrets.sh"
+        ERRORS=$((ERRORS + 1))
+    fi
+    
     if [ $ERRORS -eq 0 ]; then
         print_success "Environment variables configured"
     fi

@@ -12,11 +12,18 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, origins=["http://localhost:5173", "http://localhost:5174"])
+    
+    # Configure Flask secret key for sessions and security
+    app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'dev_secret_key_change_in_production')
+    
     # Production logging
     if os.getenv('FLASK_ENV') == 'production':
         logging.basicConfig(level=logging.INFO)
         app.logger.setLevel(logging.INFO)
+        # Additional security headers for production
+        app.config['SESSION_COOKIE_SECURE'] = True
+        app.config['SESSION_COOKIE_HTTPONLY'] = True
+        app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
     
     # Enable CORS for production domains
     cors_origins = [
