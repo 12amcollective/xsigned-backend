@@ -3,12 +3,14 @@
 ## Pre-Deployment Requirements
 
 ### ✅ **Environment Setup**
+
 - [ ] Domain configured and pointing to your Pi (xsigned.ai)
 - [ ] Pi accessible on port 80/443 from internet
 - [ ] Docker and Docker Compose installed on Pi
 - [ ] SSL certificates ready (Let's Encrypt)
 
 ### ✅ **Code Verification**
+
 - [x] Development environment tested successfully
 - [x] Waitlist endpoint working (`/api/waitlist/join`)
 - [x] All API endpoints tested
@@ -16,6 +18,7 @@
 - [x] Production nginx configuration includes waitlist routes
 
 ### ✅ **Security Configuration**
+
 - [ ] Strong database password set in `.env`
 - [ ] JWT secret key generated (32+ characters)
 - [ ] Flask secret key generated
@@ -25,6 +28,7 @@
 ## Deployment Steps
 
 ### 1. **Prepare Environment File**
+
 ```bash
 # Copy and edit production environment
 cp .env.production .env
@@ -36,11 +40,12 @@ cp .env.production .env
 ```
 
 ### 2. **Generate Secure Keys**
+
 ```bash
 # Generate JWT secret (run on your machine)
 python3 -c "import secrets; print(secrets.token_urlsafe(32))"
 
-# Generate Flask secret (run on your machine)  
+# Generate Flask secret (run on your machine)
 python3 -c "import secrets; print(secrets.token_hex(16))"
 
 # Generate strong database password
@@ -48,12 +53,14 @@ python3 -c "import secrets; print(secrets.token_urlsafe(16))"
 ```
 
 ### 3. **Deploy to Production**
+
 ```bash
 # On your Pi, run:
 ./deploy-production.sh
 ```
 
 ### 4. **Verify Deployment**
+
 ```bash
 # Test all endpoints
 ./test-production.sh  # We'll create this
@@ -62,6 +69,7 @@ python3 -c "import secrets; print(secrets.token_urlsafe(16))"
 ## Post-Deployment Verification
 
 ### ✅ **API Endpoints to Test**
+
 - [ ] `https://xsigned.ai/health` - Health check
 - [ ] `https://xsigned.ai/api/waitlist/join` - Waitlist signup
 - [ ] `https://xsigned.ai/api/waitlist/stats` - Waitlist stats
@@ -69,6 +77,7 @@ python3 -c "import secrets; print(secrets.token_urlsafe(16))"
 - [ ] `https://xsigned.ai/api/campaigns/` - Campaigns endpoint
 
 ### ✅ **Security Verification**
+
 - [ ] HTTPS redirects working (HTTP → HTTPS)
 - [ ] SSL certificate valid
 - [ ] CORS headers present
@@ -76,6 +85,7 @@ python3 -c "import secrets; print(secrets.token_urlsafe(16))"
 - [ ] Security headers present
 
 ### ✅ **Performance & Monitoring**
+
 - [ ] All containers running and healthy
 - [ ] Database accessible
 - [ ] Logs being written properly
@@ -88,7 +98,7 @@ python3 -c "import secrets; print(secrets.token_urlsafe(16))"
 # Database
 DB_PASSWORD=your_secure_password_here
 
-# Flask Configuration  
+# Flask Configuration
 FLASK_ENV=production
 FLASK_DEBUG=false
 FLASK_SECRET_KEY=your_generated_secret_key
@@ -101,26 +111,34 @@ JWT_SECRET_KEY=your_generated_jwt_secret
 ## Common Issues & Solutions
 
 ### **Issue**: SSL certificates not working
-**Solution**: 
+
+**Solution**:
+
 ```bash
 sudo ./setup-ssl.sh
 # Make sure domain DNS is properly configured
 ```
 
 ### **Issue**: 502 Bad Gateway
-**Solution**: 
+
+**Solution**:
+
 ```bash
 docker-compose -f docker-compose.production.yml logs backend
 # Check backend container logs
 ```
 
 ### **Issue**: CORS errors
-**Solution**: 
+
+**Solution**:
+
 - Verify production domain in `src/app.py` CORS configuration
 - Check nginx headers in `nginx-production.conf`
 
 ### **Issue**: Database connection failed
-**Solution**: 
+
+**Solution**:
+
 ```bash
 docker-compose -f docker-compose.production.yml logs postgres
 # Verify DB_PASSWORD in .env matches compose file
@@ -129,6 +147,7 @@ docker-compose -f docker-compose.production.yml logs postgres
 ## Rollback Plan
 
 If deployment fails:
+
 ```bash
 # Stop production services
 docker-compose -f docker-compose.production.yml down
@@ -141,6 +160,7 @@ docker-compose -f docker-compose.dev.yml up -d
 ## Success Criteria
 
 Deployment is successful when:
+
 - ✅ All containers are running and healthy
 - ✅ HTTPS website loads correctly
 - ✅ Waitlist signup works from frontend

@@ -9,12 +9,14 @@ Your XSigned backend is fully configured and tested! The waitlist functionality 
 ## 📋 **Quick Start Production Deployment**
 
 ### **Option 1: Automated Deployment (Recommended)**
+
 ```bash
 # Run the complete deployment workflow
 ./deploy-to-production.sh
 ```
 
 ### **Option 2: Manual Step-by-Step**
+
 ```bash
 # 1. Generate secure keys
 ./generate-secrets.sh
@@ -62,15 +64,15 @@ Once deployed, your API will be available at:
 
 ## 🔧 **Available Scripts**
 
-| Script | Purpose |
-|--------|---------|
+| Script                      | Purpose                           |
+| --------------------------- | --------------------------------- |
 | `./deploy-to-production.sh` | **Complete automated deployment** |
-| `./generate-secrets.sh` | Generate secure production keys |
-| `./validate-production.sh` | Pre-deployment validation |
-| `./test-production.sh` | Test production deployment |
-| `./test-waitlist.sh` | Test waitlist functionality |
-| `./deploy-dev-to-pi.sh` | Deploy development environment |
-| `./setup-dev.sh` | Setup development on Pi |
+| `./generate-secrets.sh`     | Generate secure production keys   |
+| `./validate-production.sh`  | Pre-deployment validation         |
+| `./test-production.sh`      | Test production deployment        |
+| `./test-waitlist.sh`        | Test waitlist functionality       |
+| `./deploy-dev-to-pi.sh`     | Deploy development environment    |
+| `./setup-dev.sh`            | Setup development on Pi           |
 
 ---
 
@@ -79,28 +81,30 @@ Once deployed, your API will be available at:
 Your frontend should now use these endpoints:
 
 ### **Development** (Current)
+
 ```javascript
 // vite.config.js proxy should point to:
-target: 'http://192.168.86.70:8080'
+target: "http://192.168.86.70:8080";
 
 // API calls work as:
-fetch('/api/waitlist/join', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email: userEmail })
-})
+fetch("/api/waitlist/join", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ email: userEmail }),
+});
 ```
 
 ### **Production** (After deployment)
+
 ```javascript
 // Update your frontend to use:
-const API_BASE = 'https://xsigned.ai/api'
+const API_BASE = "https://xsigned.ai/api";
 
 fetch(`${API_BASE}/waitlist/join`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email: userEmail })
-})
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ email: userEmail }),
+});
 ```
 
 ---
@@ -108,6 +112,7 @@ fetch(`${API_BASE}/waitlist/join`, {
 ## 🏗️ **Architecture Overview**
 
 ### **Development Setup**
+
 ```
 Frontend (localhost:5173)
     ↓ Vite proxy forwards /api/* to
@@ -119,6 +124,7 @@ PostgreSQL Container (port 5432)
 ```
 
 ### **Production Setup**
+
 ```
 Internet (xsigned.ai)
     ↓ HTTPS/SSL
@@ -146,6 +152,7 @@ PostgreSQL Container (port 5432)
 ## 📊 **API Response Examples**
 
 ### **Successful Waitlist Signup**
+
 ```json
 {
   "success": true,
@@ -157,6 +164,7 @@ PostgreSQL Container (port 5432)
 ```
 
 ### **Duplicate Email**
+
 ```json
 {
   "message": "You're already on the waitlist!",
@@ -166,6 +174,7 @@ PostgreSQL Container (port 5432)
 ```
 
 ### **Validation Error**
+
 ```json
 {
   "error": "Valid email address is required"
@@ -177,6 +186,7 @@ PostgreSQL Container (port 5432)
 ## 🔍 **Monitoring & Troubleshooting**
 
 ### **Check Service Status**
+
 ```bash
 # SSH to Pi and check containers
 ssh colin@192.168.86.70
@@ -188,6 +198,7 @@ docker-compose -f docker-compose.production.yml logs -f nginx
 ```
 
 ### **Test API Endpoints**
+
 ```bash
 # Quick health check
 curl https://xsigned.ai/health
@@ -220,4 +231,4 @@ Your backend is fully prepared for production deployment. The development enviro
 
 ---
 
-*Generated on June 15, 2025 - XSigned Backend v1.0*
+_Generated on June 15, 2025 - XSigned Backend v1.0_
