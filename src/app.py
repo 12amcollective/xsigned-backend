@@ -40,25 +40,46 @@ def create_app():
     ]
     CORS(app, origins=cors_origins, supports_credentials=True)
     
-    # Register blueprints
+    # Basic health check (no database required)
+    @app.route('/health', methods=['GET'])
+    def health():
+        return {"status": "healthy", "version": "1.0.0"}, 200
+    
+    # Always register blueprints first
     app.register_blueprint(users_bp)
     app.register_blueprint(campaigns_bp)
     app.register_blueprint(waitlist_bp)
     
-    # Initialize database
-    init_db()
-    
-    @app.route('/health', methods=['GET'])
-    def health():
-        return {"status": "healthy", "version": "1.0.0"}, 200
+    # Database initialization
+    db_initialized = False
+    db_error = None
+    try:
+        # Initialize database
+        init_db()
+        db_initialized = True
+        
+        @app.route('/db-status', methods=['GET'])
+        def db_status():
+            return {"status": "database_connected", "version": "1.0.0"}, 200
+            
+    except Exception as e:
+        app.logger.error(f"Database initialization failed: {e}")
+        db_error = str(e)
+        # Create a fallback endpoint to show the error
+        @app.route('/db-status', methods=['GET'])
+        def db_status():
+            return {"status": "database_error", "error": db_error}, 500
     
     return app
 
 if __name__ == '__main__':
     app = create_app()
     
+    # Get port from environment (Cloud Run uses PORT env var)
+    port = int(os.getenv('PORT', 5001))
+    
     # Production vs Development settings
     if os.getenv('FLASK_ENV') == 'production':
-        app.run(host='0.0.0.0', port=5001)
+        app.run(host='0.0.0.0', port=port)
     else:
-        app.run(debug=True, host='0.0.0.0', port=5001)
+        app.run(debug=True, host='0.0.0.0', port=port)

@@ -5,3 +5,4 @@ Flask-CORS==4.0.0
 python-dotenv==1.0.0
 flask-marshmallow==0.15.0
 marshmallow-sqlalchemy==0.29.0
+gunicorn==21.2.0
